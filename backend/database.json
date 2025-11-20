@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": "02802733-9262-4a7c-a16a-00a81dc41431",
+      "email": "kaseddie@gmail.com",
+      "workosUserId": "user_01KAG6C4A4TKANKBDN23TMCD11",
+      "kycStatus": "pending",
+      "walletBalance": 0,
+      "activeStrategy": null,
+      "stripeCustomerId": null,
+      "createdAt": "2025-11-20T08:34:00.673Z",
+      "updatedAt": "2025-11-20T08:34:00.673Z"
+    }
+  ],
+  "trades": []
+}

@@ -1,0 +1,16 @@
+﻿# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+backend/.env
+gcloud-key.json
+backend/gcloud-key.json
+
+# Build
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db

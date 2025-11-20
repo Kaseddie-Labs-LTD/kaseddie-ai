@@ -1,0 +1,21 @@
+{
+  "name": "kaseddie-ai-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@google-cloud/aiplatform": "^5.13.0",
+    "@google-cloud/vertexai": "^1.10.0",
+    "@workos-inc/node": "^7.73.0",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "nodemon": "^3.1.11",
+    "stripe": "^14.0.0",
+    "uuid": "^9.0.0"
+  }
+}
