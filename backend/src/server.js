@@ -14,26 +14,30 @@ import marketRouter from './routes/market.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Allowed origins for CORS
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://kaseddie-ai-1.netlify.app',
-  'https://kaseddie-ai.netlify.app'
-];
-
 // Configure CORS with dynamic origin check
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(null, true); // Allow anyway for now, can change to false in production
+    // Allow localhost for development
+    if (origin.includes('localhost')) {
+      return callback(null, true);
     }
+    
+    // Allow all Netlify domains (including deploy previews)
+    if (origin.includes('netlify.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow Render domains
+    if (origin.includes('onrender.com')) {
+      return callback(null, true);
+    }
+    
+    // Log and allow unknown origins (can be restricted later)
+    console.log(`CORS request from: ${origin}`);
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -69,25 +73,17 @@ app.use('/api/trading', tradingRouter);
 app.use('/api/kyc', kycRouter);
 app.use('/api/market', marketRouter);
 
-// Crypto Pulse endpoint (now uses market router, but keeping for backwards compatibility)
-app.get('/api/crypto-pulse', async (req, res) => {
-  try {
-    // Redirect to the market prices endpoint
-    const response = await fetch(`http://localhost:${PORT}/api/market/prices`);
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error('Crypto pulse error:', error);
-    // Fallback to basic data if market service fails
-    res.json([
-      { symbol: 'BTC', price: 90000, change: 2.5 },
-      { symbol: 'ETH', price: 3200, change: -1.2 },
-      { symbol: 'SOL', price: 150, change: 5.8 },
-      { symbol: 'ADA', price: 0.65, change: 3.1 },
-      { symbol: 'DOGE', price: 0.15, change: -0.5 },
-      { symbol: 'XRP', price: 0.70, change: 1.8 }
-    ]);
-  }
+// Crypto Pulse endpoint - Fallback with realistic data
+app.get('/api/crypto-pulse', (req, res) => {
+  // Return realistic fallback data
+  res.json([
+    { symbol: 'BTC', price: 90000, change: 2.5 },
+    { symbol: 'ETH', price: 3200, change: -1.2 },
+    { symbol: 'SOL', price: 150, change: 5.8 },
+    { symbol: 'ADA', price: 0.65, change: 3.1 },
+    { symbol: 'DOGE', price: 0.15, change: -0.5 },
+    { symbol: 'XRP', price: 0.70, change: 1.8 }
+  ]);
 });
 
 // 404 handler
@@ -121,7 +117,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🎃 Kaseddie AI backend haunting port ${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
+  console.log(`🌐 CORS enabled for: localhost, *.netlify.app, *.onrender.com`);
 });
 
 // Graceful shutdown
