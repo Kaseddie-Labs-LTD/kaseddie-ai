@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kaseddie API Diagnostics</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #333; }
+        .success { background: #002200; }
+        .error { background: #220000; color: #f00; }
+        button { padding: 10px 20px; margin: 10px 0; cursor: pointer; }
+        pre { background: #000; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🎃 Kaseddie API Diagnostics</h1>
+    <button onclick="runTests()">Run All Tests</button>
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'https://kaseddie-api.onrender.com';
+        
+        async function testEndpoint(name, url, method = 'GET') {
+            const startTime = Date.now();
+            try {
+                const response = await fetch(url, { 
+                    method,
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const duration = Date.now() - startTime;
+                const data = await response.json();
+                
+                return {
+                    name,
+                    success: response.ok,
+                    status: response.status,
+                    duration: `${duration}ms`,
+                    data: JSON.stringify(data, null, 2),
+                    headers: {
+                        'access-control-allow-origin': response.headers.get('access-control-allow-origin'),
+                        'content-type': response.headers.get('content-type')
+                    }
+                };
+            } catch (error) {
+                const duration = Date.now() - startTime;
+                return {
+                    name,
+                    success: false,
+                    status: 'ERROR',
+                    duration: `${duration}ms`,
+                    error: error.message
+                };
+            }
+        }
+
+        async function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Running tests...</p>';
+            
+            const tests = [
+                { name: 'Root Endpoint', url: `${API_BASE}/` },
+                { name: 'Health Check', url: `${API_BASE}/health` },
+                { name: 'CORS Test', url: `${API_BASE}/api/test` },
+                { name: 'Market Prices', url: `${API_BASE}/api/market/prices` },
+                { name: 'Auth Login', url: `${API_BASE}/api/auth/login` },
+                { name: 'Crypto Pulse', url: `${API_BASE}/api/crypto-pulse` }
+            ];
+            
+            const results = [];
+            for (const test of tests) {
+                const result = await testEndpoint(test.name, test.url);
+                results.push(result);
+            }
+            
+            // Display results
+            let html = '<h2>Test Results</h2>';
+            results.forEach(result => {
+                const cssClass = result.success ? 'success' : 'error';
+                html += `
+                    <div class="test ${cssClass}">
+                        <h3>${result.name}</h3>
+                        <p><strong>Status:</strong> ${result.status} (${result.duration})</p>
+                        ${result.headers ? `
+                            <p><strong>CORS Header:</strong> ${result.headers['access-control-allow-origin'] || 'MISSING'}</p>
+                        ` : ''}
+                        ${result.data ? `<pre>${result.data}</pre>` : ''}
+                        ${result.error ? `<p><strong>Error:</strong> ${result.error}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
