@@ -14,9 +14,9 @@ import marketRouter from './routes/market.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configure CORS
+// Configure CORS - Allow all origins for production deployment
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: '*', // Allow requests from any origin (Netlify, localhost, etc.)
   credentials: true
 }));
 app.use(express.json());

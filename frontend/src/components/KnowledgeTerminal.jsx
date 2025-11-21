@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiUrl } from '../config';
 
 function KnowledgeTerminal() {
   const [question, setQuestion] = useState('');
@@ -21,7 +22,7 @@ function KnowledgeTerminal() {
     setConversationHistory(prev => [...prev, { type: 'question', text: currentQuestion }]);
 
     try {
-      const response = await fetch('http://localhost:3000/api/ai/ask', {
+      const response = await fetch(getApiUrl('/api/ai/ask'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: currentQuestion })
@@ -38,7 +39,7 @@ function KnowledgeTerminal() {
 
         // Speak the answer
         try {
-          const audioRes = await fetch('http://localhost:3000/api/ai/speak', {
+          const audioRes = await fetch(getApiUrl('/api/ai/speak'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: aiAnswer })

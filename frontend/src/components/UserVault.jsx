@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import ManualTrade from './ManualTrade';
 import KYCVerification from './KYCVerification';
+import { getApiUrl } from '../config';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = getApiUrl('/api').replace('/api', ''); // Get base without /api for compatibility
 
 function UserVault() {
   const [user, setUser] = useState(null);

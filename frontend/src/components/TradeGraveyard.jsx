@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getApiUrl } from '../config';
 
 function TradeGraveyard() {
   const [trades, setTrades] = useState([]);
@@ -21,7 +22,7 @@ function TradeGraveyard() {
         }
 
         // Fetch real trades from API
-        const response = await fetch(`http://localhost:3000/api/trading/history/${user.id}`);
+        const response = await fetch(getApiUrl(`/api/trading/history/${user.id}`));
         const data = await response.json();
 
         if (response.ok && data.trades) {

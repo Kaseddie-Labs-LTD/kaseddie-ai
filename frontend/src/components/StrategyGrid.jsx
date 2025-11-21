@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiUrl } from '../config';
 
 const STRATEGIES = [
   { 
@@ -84,7 +85,7 @@ function StrategyGrid({ user }) {
 
       try {
         // Execute trade with the selected strategy
-        const response = await fetch('http://localhost:3000/api/trading/execute', {
+        const response = await fetch(getApiUrl('/api/trading/execute'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -124,7 +125,7 @@ function StrategyGrid({ user }) {
             const audioController = new AbortController();
             const audioTimeoutId = setTimeout(() => audioController.abort(), 30000);
 
-            const audioRes = await fetch('http://localhost:3000/api/ai/speak', {
+            const audioRes = await fetch(getApiUrl('/api/ai/speak'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ text: message }),

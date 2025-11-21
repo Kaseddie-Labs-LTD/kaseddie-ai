@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { getApiUrl } from '../config';
 
 function CryptoPulse() {
   const [cryptoData, setCryptoData] = useState([]);
 
   useEffect(() => {
     const fetchPrices = () => {
-      fetch('http://localhost:3000/api/market/prices')
+      fetch(getApiUrl('/api/market/prices'))
         .then(res => res.json())
         .then(data => setCryptoData(data))
         .catch(err => console.error('Failed to fetch crypto pulse:', err));

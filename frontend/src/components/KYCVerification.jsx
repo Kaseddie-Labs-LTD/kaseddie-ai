@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiUrl } from '../config';
 
 function KYCVerification({ user, onVerificationComplete }) {
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +32,7 @@ function KYCVerification({ user, onVerificationComplete }) {
       const timeoutId = setTimeout(() => controller.abort(), 60000);
 
       try {
-        const res = await fetch('http://localhost:3000/api/kyc/submit', {
+        const res = await fetch(getApiUrl('/api/kyc/submit'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

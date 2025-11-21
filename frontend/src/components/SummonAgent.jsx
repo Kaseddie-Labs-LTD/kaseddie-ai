@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiUrl } from '../config';
 
 function SummonAgent() {
   const [isActive, setIsActive] = useState(false);
@@ -33,7 +34,7 @@ function SummonAgent() {
 
       try {
         // Execute trade
-        const res = await fetch('http://localhost:3000/api/trading/execute', {
+        const res = await fetch(getApiUrl('/api/trading/execute'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -72,7 +73,7 @@ function SummonAgent() {
             const audioController = new AbortController();
             const audioTimeoutId = setTimeout(() => audioController.abort(), 30000);
 
-            const audioRes = await fetch('http://localhost:3000/api/ai/speak', {
+            const audioRes = await fetch(getApiUrl('/api/ai/speak'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ text: resultMessage }),

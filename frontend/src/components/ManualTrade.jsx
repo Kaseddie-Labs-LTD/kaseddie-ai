@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiUrl } from '../config';
 
 function ManualTrade({ user }) {
   const [symbol, setSymbol] = useState('BTC');
@@ -32,7 +33,7 @@ function ManualTrade({ user }) {
         }
       }
 
-      const response = await fetch('http://localhost:3000/api/trading/manual', {
+      const response = await fetch(getApiUrl('/api/trading/manual'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,7 +54,7 @@ function ManualTrade({ user }) {
         
         // Speak the confirmation
         try {
-          const audioRes = await fetch('http://localhost:3000/api/ai/speak', {
+          const audioRes = await fetch(getApiUrl('/api/ai/speak'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: successMessage })
