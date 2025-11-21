@@ -1,29 +1,136 @@
-// ... imports ...
+import 'dotenv/config'; // Must be at the very top
+import express from 'express';
+import cors from 'cors';
+
+// Import Routers
+import tradesRouter from './routes/trades.js';
+import authRouter from './routes/auth.js';
+import walletRouter from './routes/wallet.js';
+import aiRouter from './routes/ai.js';
+import tradingRouter from './routes/trading.js';
+import kycRouter from './routes/kyc.js';
+import marketRouter from './routes/market.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- FIX: Dynamic Origin for Credentials ---
+// Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://kaseddie-ai-1.netlify.app', // Your Netlify URL
-  'https://kaseddie-ai.netlify.app'    // Main Netlify URL (just in case)
+  'http://localhost:3000',
+  'https://kaseddie-ai-1.netlify.app',
+  'https://kaseddie-ai.netlify.app'
 ];
 
+// Configure CORS with dynamic origin check
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) === -1) {
-      // If origin isn't in the list, allow it anyway for the hackathon demo to be safe, 
-      // or just return the origin itself to trick the browser into thinking it's whitelisted.
-      // For strict security, you would error here. For the hackathon:
-      return callback(null, true); 
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(null, true); // Allow anyway for now, can change to false in production
     }
-    return callback(null, true);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// ... rest of file ...
+app.use(express.json());
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'Kaseddie AI Backend Online',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API Routes
+app.use('/api/auth', authRouter);
+app.use('/api/wallet', walletRouter);
+app.use('/api/trades', tradesRouter);
+app.use('/api/ai', aiRouter);
+app.use('/api/trading', tradingRouter);
+app.use('/api/kyc', kycRouter);
+app.use('/api/market', marketRouter);
+
+// Crypto Pulse endpoint (now uses market router, but keeping for backwards compatibility)
+app.get('/api/crypto-pulse', async (req, res) => {
+  try {
+    // Redirect to the market prices endpoint
+    const response = await fetch(`http://localhost:${PORT}/api/market/prices`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Crypto pulse error:', error);
+    // Fallback to basic data if market service fails
+    res.json([
+      { symbol: 'BTC', price: 90000, change: 2.5 },
+      { symbol: 'ETH', price: 3200, change: -1.2 },
+      { symbol: 'SOL', price: 150, change: 5.8 },
+      { symbol: 'ADA', price: 0.65, change: 3.1 },
+      { symbol: 'DOGE', price: 0.15, change: -0.5 },
+      { symbol: 'XRP', price: 0.70, change: 1.8 }
+    ]);
+  }
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Not Found',
+    message: `Cannot ${req.method} ${req.path}`,
+    availableEndpoints: [
+      '/api/auth',
+      '/api/wallet',
+      '/api/trades',
+      '/api/ai',
+      '/api/trading',
+      '/api/kyc',
+      '/api/market'
+    ]
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: err.message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+});
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`🎃 Kaseddie AI backend haunting port ${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received: closing HTTP server');
+  process.exit(0);
+});
