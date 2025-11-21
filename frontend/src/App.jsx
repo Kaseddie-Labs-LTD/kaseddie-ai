@@ -40,22 +40,28 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      <CryptoPulse />
+    <div className="min-h-screen bg-slate-950 text-white">
+      {/* Header with Crypto Pulse */}
+      <header>
+        <CryptoPulse />
+      </header>
       
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        <header className="text-center mb-16">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
           <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-neon-green to-neon-purple bg-clip-text text-transparent animate-pulse-glow">
             🎃 Kaseddie AI
           </h1>
           <p className="text-xl text-slate-400">
             Autonomous Crypto Trading Agent from the Crypt
           </p>
-        </header>
+        </div>
 
-        {/* AI Knowledge Terminal - Right under header */}
+        {/* AI Knowledge Terminal */}
         <KnowledgeTerminal />
 
+        {/* User Controls Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <UserVault />
           <SummonAgent />
@@ -64,8 +70,21 @@ function App() {
         {/* Strategy Grid - Only visible for verified users */}
         <StrategyGrid user={user} />
         
+        {/* Trade History */}
         <TradeGraveyard />
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 py-8 mt-16">
+        <div className="container mx-auto px-4 text-center text-slate-500">
+          <p className="text-sm">
+            🎃 Kaseddie AI - Autonomous Crypto Trading from the Crypt
+          </p>
+          <p className="text-xs mt-2">
+            Built for Kiroween Hackathon 2025
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
