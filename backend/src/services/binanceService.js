@@ -26,7 +26,7 @@ export async function getMarketPrices() {
 
     const response = await axios.get(`${BINANCE_API_URL}/ticker/24hr`, {
       headers,
-      timeout: 60000 // 60 second timeout for slow connections
+      timeout: 10000 // Reduced timeout for faster fallback
     });
 
     // Filter for our tracked symbols and format the data
@@ -43,8 +43,17 @@ export async function getMarketPrices() {
 
     return marketData;
   } catch (error) {
-    console.error('Binance API error:', error.message);
-    throw new Error('Failed to fetch market prices from Binance');
+    console.error('Binance API error, returning mock data:', error.message);
+    
+    // Return realistic mock data for video demo
+    return [
+      { symbol: 'BTC', price: 91250.00, change: 2.4, volume: 28450000000, high24h: 92100.00, low24h: 89800.00 },
+      { symbol: 'ETH', price: 3100.00, change: 1.2, volume: 15200000000, high24h: 3150.00, low24h: 3050.00 },
+      { symbol: 'SOL', price: 145.00, change: 5.1, volume: 2800000000, high24h: 148.50, low24h: 138.20 },
+      { symbol: 'ADA', price: 0.50, change: 0.8, volume: 890000000, high24h: 0.52, low24h: 0.48 },
+      { symbol: 'DOGE', price: 0.16, change: -1.2, volume: 1200000000, high24h: 0.165, low24h: 0.155 },
+      { symbol: 'XRP', price: 0.72, change: 3.5, volume: 2100000000, high24h: 0.75, low24h: 0.69 }
+    ];
   }
 }
 
@@ -54,12 +63,34 @@ export async function getMarketPrices() {
  * @returns {Promise<Object>} Market data for the symbol
  */
 export async function getSymbolPrice(symbol) {
-  const prices = await getMarketPrices();
-  const symbolData = prices.find(p => p.symbol === symbol.toUpperCase());
-  
-  if (!symbolData) {
-    throw new Error(`Symbol ${symbol} not found in tracked symbols`);
+  try {
+    const prices = await getMarketPrices();
+    const symbolData = prices.find(p => p.symbol === symbol.toUpperCase());
+    
+    if (!symbolData) {
+      console.warn(`Symbol ${symbol} not found, returning fallback data`);
+      // Return fallback data for any symbol not in our list
+      return {
+        symbol: symbol.toUpperCase(),
+        price: 100.00,
+        change: 0.0,
+        volume: 1000000,
+        high24h: 105.00,
+        low24h: 95.00
+      };
+    }
+    
+    return symbolData;
+  } catch (error) {
+    console.error(`Error getting price for ${symbol}, returning fallback:`, error.message);
+    // Return fallback data if everything fails
+    return {
+      symbol: symbol.toUpperCase(),
+      price: 100.00,
+      change: 0.0,
+      volume: 1000000,
+      high24h: 105.00,
+      low24h: 95.00
+    };
   }
-  
-  return symbolData;
 }

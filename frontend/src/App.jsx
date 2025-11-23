@@ -10,6 +10,33 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Check for user data in URL (from WorkOS redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const userParam = urlParams.get('user');
+    
+    if (userParam) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userParam));
+        console.log('User data from URL:', userData);
+        
+        // Store in localStorage
+        localStorage.setItem('kaseddie_user', JSON.stringify(userData));
+        setUser(userData);
+        
+        // Clean up URL by removing the user parameter
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('user');
+        window.history.replaceState({}, '', newUrl.pathname + newUrl.search);
+        
+        // Dispatch custom event for other components
+        window.dispatchEvent(new CustomEvent('userUpdated'));
+        
+        return; // Exit early since we found user in URL
+      } catch (error) {
+        console.error('Error parsing user from URL:', error);
+      }
+    }
+
     // Listen for user changes from localStorage
     const checkUser = () => {
       const storedUser = localStorage.getItem('kaseddie_user');
@@ -63,7 +90,7 @@ function App() {
 
         {/* User Controls Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <UserVault />
+          <UserVault user={user} setUser={setUser} />
           <SummonAgent />
         </div>
 

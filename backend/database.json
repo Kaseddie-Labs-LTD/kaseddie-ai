@@ -1,15 +1,20 @@
 {
   "users": [
     {
-      "id": "02802733-9262-4a7c-a16a-00a81dc41431",
+      "id": "93c01fcd-e3a1-45d7-9911-c7ce3f7b219a",
       "email": "kaseddie@gmail.com",
       "workosUserId": "user_01KAG6C4A4TKANKBDN23TMCD11",
-      "kycStatus": "pending",
-      "walletBalance": 0,
+      "kycStatus": "verified",
+      "walletBalance": 20000,
       "activeStrategy": null,
       "stripeCustomerId": null,
-      "createdAt": "2025-11-20T08:34:00.673Z",
-      "updatedAt": "2025-11-20T08:34:00.673Z"
+      "createdAt": "2025-11-22T11:59:15.478Z",
+      "updatedAt": "2025-11-22T18:55:12.458Z",
+      "kycVerifiedAt": "2025-11-22T18:51:35.402Z",
+      "kycDocuments": {
+        "idDocument": "National ID.jpg",
+        "selfie": "First KYC Test Phot.jpg"
+      }
     }
   ],
   "trades": []
