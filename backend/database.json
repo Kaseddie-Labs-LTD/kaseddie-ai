@@ -5,11 +5,11 @@
       "email": "kaseddie@gmail.com",
       "workosUserId": "user_01KAG6C4A4TKANKBDN23TMCD11",
       "kycStatus": "verified",
-      "walletBalance": 20000,
+      "walletBalance": 19599.600000000006,
       "activeStrategy": null,
       "stripeCustomerId": null,
       "createdAt": "2025-11-22T11:59:15.478Z",
-      "updatedAt": "2025-11-22T18:55:12.458Z",
+      "updatedAt": "2025-11-23T08:57:28.231Z",
       "kycVerifiedAt": "2025-11-22T18:51:35.402Z",
       "kycDocuments": {
         "idDocument": "National ID.jpg",
@@ -17,5 +17,74 @@
       }
     }
   ],
-  "trades": []
+  "trades": [
+    {
+      "id": "21f64385-eba5-4a2e-bf69-8725c864382e",
+      "userId": "93c01fcd-e3a1-45d7-9911-c7ce3f7b219a",
+      "symbol": "BTC",
+      "strategy": "momentum",
+      "action": "BUY",
+      "price": 85799.99,
+      "amount": 0.001165501301340478,
+      "usdValue": 100,
+      "fee": 0.1,
+      "stopLoss": 84083.9902,
+      "takeProfit": 89231.98960000002,
+      "confidence": 83,
+      "reasoning": "Strong upward momentum with healthy RSI",
+      "status": "completed",
+      "timestamp": "2025-11-23T07:51:05.850Z"
+    },
+    {
+      "id": "58d5547d-d3e4-4612-be83-5c9f3f349f9f",
+      "userId": "93c01fcd-e3a1-45d7-9911-c7ce3f7b219a",
+      "symbol": "BTC",
+      "strategy": "momentum",
+      "action": "BUY",
+      "price": 86049.02,
+      "amount": 0.0011621282845522237,
+      "usdValue": 100,
+      "fee": 0.1,
+      "stopLoss": 84328.0396,
+      "takeProfit": 89490.9808,
+      "confidence": 82,
+      "reasoning": "Strong upward momentum with healthy RSI",
+      "status": "completed",
+      "timestamp": "2025-11-23T08:50:22.160Z"
+    },
+    {
+      "id": "c60f5442-e80e-473b-aaca-9d221eea437a",
+      "userId": "93c01fcd-e3a1-45d7-9911-c7ce3f7b219a",
+      "symbol": "BTC",
+      "strategy": "momentum",
+      "action": "BUY",
+      "price": 86107.56,
+      "amount": 0.0011613382146701172,
+      "usdValue": 100,
+      "fee": 0.1,
+      "stopLoss": 84385.40879999999,
+      "takeProfit": 89551.8624,
+      "confidence": 87,
+      "reasoning": "Strong upward momentum with healthy RSI",
+      "status": "completed",
+      "timestamp": "2025-11-23T08:56:47.830Z"
+    },
+    {
+      "id": "c1bba418-1fe8-4e1f-ac7d-004a4e6026df",
+      "userId": "93c01fcd-e3a1-45d7-9911-c7ce3f7b219a",
+      "symbol": "BTC",
+      "strategy": "mean-reversion",
+      "action": "BUY",
+      "price": 86129.27,
+      "amount": 0.0011610454843051612,
+      "usdValue": 100,
+      "fee": 0.1,
+      "stopLoss": 84406.68460000001,
+      "takeProfit": 89574.44080000001,
+      "confidence": 70,
+      "reasoning": "Price near fair value, accumulating",
+      "status": "completed",
+      "timestamp": "2025-11-23T08:57:28.346Z"
+    }
+  ]
 }

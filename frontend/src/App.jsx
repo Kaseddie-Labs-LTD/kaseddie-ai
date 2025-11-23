@@ -5,11 +5,15 @@ import TradeGraveyard from './components/TradeGraveyard';
 import UserVault from './components/UserVault';
 import StrategyGrid from './components/StrategyGrid';
 import KnowledgeTerminal from './components/KnowledgeTerminal';
+import { getApiUrl } from './config';
 
 function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Debug: Log the API URL being used
+    console.log('🔗 Frontend API URL:', getApiUrl('/api/test'));
+    
     // Check for user data in URL (from WorkOS redirect)
     const urlParams = new URLSearchParams(window.location.search);
     const userParam = urlParams.get('user');

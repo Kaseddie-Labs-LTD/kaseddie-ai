@@ -45,17 +45,19 @@ function KnowledgeTerminal() {
             body: JSON.stringify({ text: aiAnswer })
           });
           
-          if (audioRes.ok) {
+          if (audioRes.ok && audioRes.headers.get('content-type')?.includes('audio')) {
             const audioBlob = await audioRes.blob();
             const audioUrl = URL.createObjectURL(audioBlob);
             const audio = new Audio(audioUrl);
-            audio.play();
+            audio.play().catch(e => console.log('Audio play failed:', e));
             
             // Clean up the URL after playing
             audio.onended = () => URL.revokeObjectURL(audioUrl);
+          } else {
+            console.log('Voice synthesis unavailable');
           }
         } catch (audioErr) {
-          console.error('Failed to play audio:', audioErr);
+          console.log('Voice synthesis failed:', audioErr);
         }
       } else {
         const errorMsg = data.error || 'Failed to get answer';
