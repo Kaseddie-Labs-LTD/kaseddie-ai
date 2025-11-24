@@ -3,8 +3,6 @@ import ManualTrade from './ManualTrade';
 import KYCVerification from './KYCVerification';
 import { getApiUrl } from '../config';
 
-const API_BASE = getApiUrl('/api').replace('/api', ''); // Get base without /api for compatibility
-
 function UserVault() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,7 +42,7 @@ function UserVault() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${API_BASE}/auth/login`);
+      const response = await fetch(getApiUrl('/api/auth/login'));
       const data = await response.json();
       
       if (data.authUrl) {
@@ -67,7 +65,7 @@ function UserVault() {
     setMessage('');
 
     try {
-      const response = await fetch(`${API_BASE}/wallet/deposit`, {
+      const response = await fetch(getApiUrl('/api/wallet/deposit'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -105,7 +103,7 @@ function UserVault() {
     setMessage('');
 
     try {
-      const response = await fetch(`${API_BASE}/wallet/withdraw`, {
+      const response = await fetch(getApiUrl('/api/wallet/withdraw'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
