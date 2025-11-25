@@ -1,15 +1,20 @@
 /**
  * API Configuration
- * Uses environment variable VITE_API_URL if available, otherwise defaults to localhost
+ * Automatically detects environment and uses appropriate backend URL
+ * - Production (Netlify): Uses Render backend
+ * - Development (localhost): Uses local backend
  */
 
-// Get API base URL from environment or use localhost for development
-// TEMP: Force localhost for video demo - OVERRIDE ALL ENVIRONMENT VARIABLES
-export const API_BASE = 'http://localhost:3000';
+// Detect environment and set appropriate API base URL
+const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
-// Double check - log what we're actually using
-console.log('🔧 FORCED API_BASE:', API_BASE);
-console.log('🌍 Environment VITE_API_URL:', import.meta.env.VITE_API_URL);
+export const API_BASE = isProduction 
+  ? 'https://kaseddie-ai.onrender.com'  // Production: Render backend
+  : 'http://localhost:3000';             // Development: Local backend
+
+// Log configuration for debugging
+console.log('🌍 Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
+console.log('🔗 API Base URL:', API_BASE);
 
 /**
  * Helper function to construct full API URLs

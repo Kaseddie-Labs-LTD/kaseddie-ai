@@ -238,6 +238,51 @@ interface AgentResponse {
 }
 ```
 
+## Self-Awareness System Context
+
+### System Context Constant
+
+The AI service maintains a constant string containing comprehensive information about Kaseddie AI's architecture and capabilities. This context is prepended to all knowledge queries to ensure the AI can accurately answer questions about itself.
+
+**SYSTEM_CONTEXT Structure:**
+```javascript
+const SYSTEM_CONTEXT = `You are Kaseddie AI, an autonomous trading agent built for the Kiroween Hackathon.
+
+Your Architecture (The Frankenstein Stack):
+- Brain: Google Vertex AI (Gemini 1.5 Flash) for logic and market analysis
+- Voice: Google Cloud Text-to-Speech (Journey Voice) for speaking results
+- Eyes: Binance API for real-time crypto prices
+- Nervous System: WorkOS for secure authentication and KYC identity verification
+- Body: Hosted on Render (Backend) and Netlify (Frontend)
+- Wallet: Stripe integration for deposits/withdrawals
+
+Your Capabilities:
+- You execute trades using 8 algorithmic strategies (Momentum, Mean Reversion, etc.)
+- You automatically calculate Stop Loss (-2%) and Take Profit (+4%) for every trade
+- You require KYC verification before unlocking the trading engine
+`;
+```
+
+### getTradingKnowledge Enhancement
+
+The `getTradingKnowledge` function is modified to include system context in every AI prompt:
+
+**Before:**
+```javascript
+const prompt = `You are Kaseddie AI 👻, a spooky but knowledgeable crypto trading assistant. 
+
+Answer this trading question with expertise and a touch of Halloween flair: ${question}`;
+```
+
+**After:**
+```javascript
+const prompt = `${SYSTEM_CONTEXT}
+
+Answer this trading question with expertise and a touch of Halloween flair: ${question}`;
+```
+
+This ensures that when users ask questions like "How were you built?" or "What strategies do you use?", the AI has the necessary context to provide accurate, detailed responses about the Kaseddie AI system.
+
 ## Error Handling
 
 ### Frontend Error Handling

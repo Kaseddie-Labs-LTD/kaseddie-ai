@@ -4,10 +4,34 @@ import { getApiUrl } from '../config';
 function ManualTrade({ user }) {
   const [symbol, setSymbol] = useState('BTC');
   const [amount, setAmount] = useState('');
+  const [price, setPrice] = useState('');
   const [stopLoss, setStopLoss] = useState('');
   const [takeProfit, setTakeProfit] = useState('');
   const [processing, setProcessing] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Smart Risk Calculator Functions
+  const calculateStopLoss = (percentage) => {
+    if (!price || parseFloat(price) <= 0) {
+      setMessage('⚠️ Please enter a valid price first');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    const basePrice = parseFloat(price);
+    const stopLossPrice = (basePrice * (1 + percentage / 100)).toFixed(2);
+    setStopLoss(stopLossPrice);
+  };
+
+  const calculateTakeProfit = (percentage) => {
+    if (!price || parseFloat(price) <= 0) {
+      setMessage('⚠️ Please enter a valid price first');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    const basePrice = parseFloat(price);
+    const takeProfitPrice = (basePrice * (1 + percentage / 100)).toFixed(2);
+    setTakeProfit(takeProfitPrice);
+  };
 
   const executeManualTrade = async (action) => {
     if (!amount || parseFloat(amount) <= 0) {
@@ -75,6 +99,7 @@ function ManualTrade({ user }) {
 
         // Clear form
         setAmount('');
+        setPrice('');
         setStopLoss('');
         setTakeProfit('');
         
@@ -122,6 +147,29 @@ function ManualTrade({ user }) {
           />
         </div>
 
+        <div>
+          <label className="block text-sm text-slate-400 mb-2">Current Price ($)</label>
+          <input
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="Enter current price"
+            className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple font-bold text-lg"
+            disabled={processing}
+          />
+        </div>
+
+        {/* Risk Management Guide */}
+        <div className="bg-slate-900/50 border border-neon-purple/30 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xl">🛡️</span>
+            <h4 className="text-sm font-bold text-neon-purple">Smart Risk Management</h4>
+          </div>
+          <p className="text-xs text-slate-400">
+            💡 <span className="text-neon-green font-semibold">2% Rule:</span> Never risk more than 2% of your portfolio per trade
+          </p>
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-slate-400 mb-2">Stop Loss ($)</label>
@@ -129,10 +177,26 @@ function ManualTrade({ user }) {
               type="number"
               value={stopLoss}
               onChange={(e) => setStopLoss(e.target.value)}
-              placeholder="Optional"
-              className="w-full bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+              placeholder="Auto-calculate below"
+              className="w-full bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm mb-2"
               disabled={processing}
             />
+            <div className="flex gap-2">
+              <button
+                onClick={() => calculateStopLoss(-2)}
+                disabled={processing}
+                className="flex-1 bg-red-500/20 text-red-400 border border-red-500/50 font-semibold py-2 px-3 rounded-lg hover:bg-red-500/30 transition-all text-xs disabled:opacity-50"
+              >
+                -2%
+              </button>
+              <button
+                onClick={() => calculateStopLoss(-5)}
+                disabled={processing}
+                className="flex-1 bg-red-500/20 text-red-400 border border-red-500/50 font-semibold py-2 px-3 rounded-lg hover:bg-red-500/30 transition-all text-xs disabled:opacity-50"
+              >
+                -5%
+              </button>
+            </div>
           </div>
 
           <div>
@@ -141,10 +205,26 @@ function ManualTrade({ user }) {
               type="number"
               value={takeProfit}
               onChange={(e) => setTakeProfit(e.target.value)}
-              placeholder="Optional"
-              className="w-full bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-green text-sm"
+              placeholder="Auto-calculate below"
+              className="w-full bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-green text-sm mb-2"
               disabled={processing}
             />
+            <div className="flex gap-2">
+              <button
+                onClick={() => calculateTakeProfit(4)}
+                disabled={processing}
+                className="flex-1 bg-neon-green/20 text-neon-green border border-neon-green/50 font-semibold py-2 px-3 rounded-lg hover:bg-neon-green/30 transition-all text-xs disabled:opacity-50"
+              >
+                +4%
+              </button>
+              <button
+                onClick={() => calculateTakeProfit(15)}
+                disabled={processing}
+                className="flex-1 bg-neon-green/20 text-neon-green border border-neon-green/50 font-semibold py-2 px-3 rounded-lg hover:bg-neon-green/30 transition-all text-xs disabled:opacity-50"
+              >
+                +15%
+              </button>
+            </div>
           </div>
         </div>
 

@@ -1,75 +1,53 @@
-import axios from 'axios';
+import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
-
-// Default voice ID (Rachel - a clear, professional voice)
-const DEFAULT_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
+// Initialize Google Cloud Text-to-Speech client
+// It will automatically use GOOGLE_APPLICATION_CREDENTIALS from .env
+const client = new TextToSpeechClient();
 
 /**
- * Synthesize speech from text using ElevenLabs API
+ * Synthesize speech from text using Google Cloud Text-to-Speech
  * @param {string} text - Text to convert to speech
- * @param {string} voiceId - Optional voice ID (defaults to Rachel)
+ * @param {string} voiceName - Optional voice name (defaults to Journey-D)
  * @returns {Promise<Buffer|null>} Audio buffer or null if failed
  */
-export async function synthesizeSpeech(text, voiceId = DEFAULT_VOICE_ID) {
-  if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'placeholder') {
-    console.warn('ElevenLabs API key not configured, returning null');
-    return null;
-  }
-
+export async function synthesizeSpeech(text, voiceName = 'en-US-Journey-D') {
   try {
-    const response = await axios.post(
-      `${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`,
-      {
-        text,
-        model_id: 'eleven_flash_v2_5',
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75
-        }
+    // Create the request object
+    const request = {
+      input: { text: text },
+      // Use a high-quality "Journey" or "Neural2" voice
+      voice: { 
+        languageCode: 'en-US', 
+        name: voiceName, 
+        ssmlGender: 'MALE' 
       },
-      {
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_API_KEY
-        },
-        responseType: 'arraybuffer',
-        timeout: 10000
-      }
-    );
+      audioConfig: { 
+        audioEncoding: 'MP3',
+        speakingRate: 1.0,
+        pitch: 0.0,
+        volumeGainDb: 0.0
+      },
+    };
 
-    return Buffer.from(response.data);
+    // Call Google Cloud Text-to-Speech API
+    const [response] = await client.synthesizeSpeech(request);
+    
+    // Return the audio content as Buffer
+    return Buffer.from(response.audioContent);
   } catch (error) {
-    console.error('ElevenLabs API error, returning null:', error.response?.data || error.message);
+    console.error('Google Cloud TTS error, returning null:', error.message);
     return null;
   }
 }
 
 /**
- * Get available voices from ElevenLabs
- * @returns {Promise<Array>} List of available voices
+ * Get available voices (stub for compatibility)
+ * @returns {Promise<Array>} Empty array (Google Cloud has many voices, but we'll keep it simple)
  */
 export async function getAvailableVoices() {
-  if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'placeholder') {
-    console.warn('ElevenLabs API key not configured, returning empty array');
-    return [];
-  }
-
-  try {
-    const response = await axios.get(`${ELEVENLABS_API_URL}/voices`, {
-      headers: {
-        'xi-api-key': ELEVENLABS_API_KEY
-      },
-      timeout: 10000
-    });
-
-    return response.data.voices;
-  } catch (error) {
-    console.error('ElevenLabs API error, returning empty array:', error.response?.data || error.message);
-    return [];
-  }
+  // Return empty array to prevent frontend errors
+  // In a real implementation, you could call client.listVoices()
+  return [];
 }
 
 /**
@@ -83,26 +61,10 @@ export async function synthesizeTradingAlert(message) {
 }
 
 /**
- * Get user's character count and subscription info
- * @returns {Promise<Object|null>} User subscription info or null if failed
+ * Get user info (stub for compatibility)
+ * @returns {Promise<Object|null>} Null (not applicable for Google Cloud TTS)
  */
 export async function getUserInfo() {
-  if (!ELEVENLABS_API_KEY || ELEVENLABS_API_KEY === 'placeholder') {
-    console.warn('ElevenLabs API key not configured, returning null');
-    return null;
-  }
-
-  try {
-    const response = await axios.get(`${ELEVENLABS_API_URL}/user`, {
-      headers: {
-        'xi-api-key': ELEVENLABS_API_KEY
-      },
-      timeout: 10000
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error('ElevenLabs API error, returning null:', error.response?.data || error.message);
-    return null;
-  }
+  // Return null since Google Cloud TTS doesn't have user info concept like ElevenLabs
+  return null;
 }

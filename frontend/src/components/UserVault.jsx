@@ -10,6 +10,7 @@ function UserVault() {
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [processing, setProcessing] = useState(false);
   const [message, setMessage] = useState('');
+  const [playingIntro, setPlayingIntro] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in (from URL callback or localStorage)
@@ -58,6 +59,56 @@ function UserVault() {
     setUser(null);
     localStorage.removeItem('kaseddie_user');
     setMessage('Logged out successfully');
+  };
+
+  const playFrankensteinIntro = async () => {
+    setPlayingIntro(true);
+    
+    const introScript = "Greetings. I am Kaseddie AI. I am not just a trading bot; I am a Frankenstein creation, stitched together from the most powerful APIs on the web. My body is built on Render and Netlify. My nervous system uses WorkOS for identity verification and Stripe for financial operations. My eyes see the market in real-time using Binance. And my brain? I am powered by Google Vertex AI, allowing me to analyze trends, execute strategies, and speak to you directly using Google Cloud Voice. I am alive, and I am ready to trade.";
+    
+    try {
+      const response = await fetch(getApiUrl('/api/ai/speak'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: introScript })
+      });
+      
+      if (response.ok && response.headers.get('content-type')?.includes('audio')) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          setPlayingIntro(false);
+        };
+        
+        audio.onerror = () => {
+          URL.revokeObjectURL(audioUrl);
+          setPlayingIntro(false);
+          setMessage('Audio playback failed');
+        };
+        
+        await audio.play();
+      } else {
+        console.log('Voice synthesis unavailable, using browser TTS');
+        // Fallback to browser's built-in text-to-speech
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(introScript);
+          utterance.rate = 0.9;
+          utterance.pitch = 1.1;
+          utterance.onend = () => setPlayingIntro(false);
+          speechSynthesis.speak(utterance);
+        } else {
+          setPlayingIntro(false);
+          setMessage('Voice synthesis not available');
+        }
+      }
+    } catch (error) {
+      console.error('Frankenstein intro error:', error);
+      setPlayingIntro(false);
+      setMessage('Failed to play intro');
+    }
   };
 
   const handleDeposit = async () => {
@@ -162,6 +213,15 @@ function UserVault() {
 
   return (
     <div className="bg-slate-800 rounded-lg p-8 shadow-xl border border-neon-green/30">
+      {/* Frankenstein Intro Button */}
+      <button
+        onClick={playFrankensteinIntro}
+        disabled={playingIntro}
+        className="w-full mb-6 py-3 bg-slate-800 border border-neon-purple text-neon-purple rounded hover:bg-neon-purple/10 transition-all text-xs font-mono uppercase tracking-widest shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {playingIntro ? '🎙️ Playing Frankenstein Intro...' : '🎙️ Play Frankenstein Intro'}
+      </button>
+
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-3xl font-bold mb-2">

@@ -54,7 +54,14 @@ function KnowledgeTerminal() {
             // Clean up the URL after playing
             audio.onended = () => URL.revokeObjectURL(audioUrl);
           } else {
-            console.log('Voice synthesis unavailable');
+            console.log('Voice synthesis unavailable, using browser TTS');
+            // Fallback to browser's built-in text-to-speech
+            if ('speechSynthesis' in window) {
+              const utterance = new SpeechSynthesisUtterance(aiAnswer);
+              utterance.rate = 0.9;
+              utterance.pitch = 1.1;
+              speechSynthesis.speak(utterance);
+            }
           }
         } catch (audioErr) {
           console.log('Voice synthesis failed:', audioErr);

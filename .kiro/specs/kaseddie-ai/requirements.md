@@ -88,3 +88,15 @@ Kaseddie AI is an autonomous crypto trading agent built for the Kiroween hackath
 3. THE Frontend Application SHALL run on port 5173 using Vite development server
 4. THE Backend API SHALL run on port 3000 using Express server
 5. THE Frontend Application SHALL make HTTP requests to http://localhost:3000 for API communication
+
+### Requirement 7
+
+**User Story:** As a user, I want the Knowledge Terminal to provide information about Kaseddie AI itself, so that I can understand the system's architecture, capabilities, and trading strategies
+
+#### Acceptance Criteria
+
+1. WHEN the Trading Agent processes a knowledge query about system architecture, THE Trading Agent SHALL include context about its technology stack including Google Vertex AI, Google Cloud Text-to-Speech, Binance API, WorkOS, Stripe, Render, and Netlify
+2. WHEN the Trading Agent processes a knowledge query about trading capabilities, THE Trading Agent SHALL include context about its eight algorithmic strategies and automatic stop loss and take profit calculations
+3. WHEN the Trading Agent processes a knowledge query about security features, THE Trading Agent SHALL include context about KYC verification requirements before trading engine access
+4. WHEN the Trading Agent receives any user question, THE Trading Agent SHALL prepend system context to the AI prompt before generating a response
+5. THE Trading Agent SHALL maintain consistent self-awareness across all knowledge queries regardless of question topic
