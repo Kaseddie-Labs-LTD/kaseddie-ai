@@ -1,0 +1,319 @@
+import { useState } from 'react';
+import { getApiUrl } from '../config';
+
+function SettingsModal({ onClose }) {
+  const [activeSection, setActiveSection] = useState('preferences');
+  const [settings, setSettings] = useState({
+    autoTrade: false,
+    riskLevel: 'MEDIUM',
+    notifications: true,
+    soundEffects: true,
+    theme: 'dark',
+    apiKey: '',
+    apiSecret: '',
+  });
+
+  const sections = [
+    { id: 'preferences', label: 'Trade Preferences', icon: '⚙️' },
+    { id: 'api', label: 'API Settings', icon: '🔑' },
+    { id: 'shortcuts', label: 'Shortcuts', icon: '⌨️' },
+    { id: 'cache', label: 'Clean Cache', icon: '🧹' },
+    { id: 'updates', label: 'Updates', icon: '🔄' },
+    { id: 'feedback', label: 'Feedback', icon: '💬' },
+  ];
+
+  const handleSave = () => {
+    localStorage.setItem('kaseddie_settings', JSON.stringify(settings));
+    alert('✅ Settings saved successfully!');
+  };
+
+  const handleClearCache = () => {
+    if (confirm('Are you sure you want to clear all cached data?')) {
+      localStorage.clear();
+      alert('✅ Cache cleared! Please refresh the page.');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-slate-900 rounded-xl border border-neon-purple/30 max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+        {/* Header */}
+        <div className="bg-slate-800 border-b border-slate-700 p-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-neon-purple">⚙️ System Settings</h2>
+            <p className="text-sm text-slate-400 mt-1">Configure your Kaseddie AI experience</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-white text-2xl"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="flex h-[600px]">
+          {/* Sidebar */}
+          <div className="w-64 bg-slate-800/50 border-r border-slate-700 p-4 overflow-y-auto">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-all ${
+                  activeSection === section.id
+                    ? 'bg-neon-purple/20 text-neon-purple border border-neon-purple/50'
+                    : 'text-slate-400 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                <span className="text-xl">{section.icon}</span>
+                <span className="font-medium">{section.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 p-6 overflow-y-auto">
+            {activeSection === 'preferences' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">Trade Preferences</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                    <div>
+                      <p className="font-semibold text-white">Auto-Trading</p>
+                      <p className="text-sm text-slate-400">Enable autonomous trading</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.autoTrade}
+                        onChange={(e) => setSettings({ ...settings, autoTrade: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-green"></div>
+                    </label>
+                  </div>
+
+                  <div className="p-4 bg-slate-800 rounded-lg">
+                    <label className="block mb-2 font-semibold text-white">Risk Level</label>
+                    <select
+                      value={settings.riskLevel}
+                      onChange={(e) => setSettings({ ...settings, riskLevel: e.target.value })}
+                      className="w-full bg-slate-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple"
+                    >
+                      <option value="LOW">🛡️ Low Risk (Conservative)</option>
+                      <option value="MEDIUM">⚖️ Medium Risk (Balanced)</option>
+                      <option value="HIGH">🚀 High Risk (Aggressive)</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                    <div>
+                      <p className="font-semibold text-white">Notifications</p>
+                      <p className="text-sm text-slate-400">Trade alerts and updates</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.notifications}
+                        onChange={(e) => setSettings({ ...settings, notifications: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-green"></div>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                    <div>
+                      <p className="font-semibold text-white">Sound Effects</p>
+                      <p className="text-sm text-slate-400">Voice responses and alerts</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={settings.soundEffects}
+                        onChange={(e) => setSettings({ ...settings, soundEffects: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-green"></div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'api' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">🔑 API Settings</h3>
+                
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                  <p className="text-yellow-400 text-sm">
+                    ⚠️ <strong>Security Warning:</strong> Never share your API keys. They provide full access to your trading account.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-2 font-semibold text-white">Binance API Key</label>
+                    <input
+                      type="password"
+                      value={settings.apiKey}
+                      onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
+                      placeholder="Enter your Binance API Key"
+                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block mb-2 font-semibold text-white">Binance API Secret</label>
+                    <input
+                      type="password"
+                      value={settings.apiSecret}
+                      onChange={(e) => setSettings({ ...settings, apiSecret: e.target.value })}
+                      placeholder="Enter your Binance API Secret"
+                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple"
+                    />
+                  </div>
+
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-white mb-2">How to get API Keys:</h4>
+                    <ol className="text-sm text-slate-400 space-y-1 list-decimal list-inside">
+                      <li>Log in to your Binance account</li>
+                      <li>Go to API Management</li>
+                      <li>Create a new API key</li>
+                      <li>Enable "Spot & Margin Trading"</li>
+                      <li>Copy and paste keys here</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'shortcuts' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">⌨️ Keyboard Shortcuts</h3>
+                
+                <div className="space-y-3">
+                  {[
+                    { keys: ['Ctrl', 'K'], action: 'Open Knowledge Terminal' },
+                    { keys: ['Ctrl', 'T'], action: 'Quick Trade' },
+                    { keys: ['Ctrl', 'S'], action: 'Open Settings' },
+                    { keys: ['Ctrl', 'M'], action: 'View Markets' },
+                    { keys: ['Ctrl', 'H'], action: 'Trade History' },
+                    { keys: ['Esc'], action: 'Close Modal' },
+                  ].map((shortcut, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
+                      <span className="text-slate-300">{shortcut.action}</span>
+                      <div className="flex gap-2">
+                        {shortcut.keys.map((key, i) => (
+                          <kbd key={i} className="px-3 py-1 bg-slate-700 border border-slate-600 rounded text-sm font-mono text-neon-green">
+                            {key}
+                          </kbd>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'cache' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">🧹 Clean Cache</h3>
+                
+                <div className="bg-slate-800 rounded-lg p-6 text-center">
+                  <div className="text-6xl mb-4">🗑️</div>
+                  <h4 className="text-lg font-semibold text-white mb-2">Clear All Cached Data</h4>
+                  <p className="text-slate-400 mb-6">
+                    This will remove all stored settings, trade history, and user data from your browser.
+                  </p>
+                  <button
+                    onClick={handleClearCache}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-all"
+                  >
+                    Clear Cache
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'updates' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">🔄 System Updates</h3>
+                
+                <div className="bg-slate-800 rounded-lg p-6">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="text-4xl">✅</div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-neon-green">You're up to date!</h4>
+                      <p className="text-slate-400 text-sm">Kaseddie AI v1.0.0</p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-slate-700 pt-4 mt-4">
+                    <h5 className="font-semibold text-white mb-2">Latest Updates:</h5>
+                    <ul className="text-sm text-slate-400 space-y-2">
+                      <li>✨ Added Smart Risk Buttons</li>
+                      <li>🧠 Hybrid Brain with instant answers</li>
+                      <li>🔑 API Settings configuration</li>
+                      <li>⚙️ Global Settings System</li>
+                      <li>📊 Professional Navigation Bar</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'feedback' && (
+              <div className="space-y-6">
+                <h3 className="text-xl font-bold text-white mb-4">💬 Send Feedback</h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-2 font-semibold text-white">Feedback Type</label>
+                    <select className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple">
+                      <option>🐛 Bug Report</option>
+                      <option>💡 Feature Request</option>
+                      <option>⭐ General Feedback</option>
+                      <option>❓ Question</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block mb-2 font-semibold text-white">Your Message</label>
+                    <textarea
+                      rows="6"
+                      placeholder="Tell us what you think..."
+                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple resize-none"
+                    ></textarea>
+                  </div>
+
+                  <button className="w-full bg-neon-purple hover:bg-neon-purple/80 text-white font-bold py-3 px-6 rounded-lg transition-all">
+                    Send Feedback
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="bg-slate-800 border-t border-slate-700 p-4 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-6 py-2 bg-neon-green hover:bg-neon-green/80 text-slate-900 font-bold rounded-lg transition-all"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default SettingsModal;

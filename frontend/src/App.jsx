@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import NavigationBar from './components/NavigationBar';
 import CryptoPulse from './components/CryptoPulse';
 import SummonAgent from './components/SummonAgent';
 import TradeGraveyard from './components/TradeGraveyard';
 import UserVault from './components/UserVault';
 import StrategyGrid from './components/StrategyGrid';
 import KnowledgeTerminal from './components/KnowledgeTerminal';
+import Footer from './components/Footer';
 import { getApiUrl } from './config';
 
 function App() {
@@ -72,10 +74,11 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      {/* Header with Crypto Pulse */}
-      <header>
-        <CryptoPulse />
-      </header>
+      {/* Professional Navigation Bar */}
+      <NavigationBar />
+      
+      {/* Crypto Pulse Ticker */}
+      <CryptoPulse />
       
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
@@ -105,17 +108,8 @@ function App() {
         <TradeGraveyard />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center text-slate-500">
-          <p className="text-sm">
-            🎃 Kaseddie AI - Autonomous Crypto Trading from the Crypt
-          </p>
-          <p className="text-xs mt-2">
-            Built for Kiroween Hackathon 2025
-          </p>
-        </div>
-      </footer>
+      {/* Enhanced Footer */}
+      <Footer />
     </div>
   );
 }
