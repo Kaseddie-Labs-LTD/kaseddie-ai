@@ -86,10 +86,15 @@ function KYCVerification({ user, onVerificationComplete }) {
 
   const handleFileChange = (e, type) => {
     const file = e.target.files[0];
+    if (!file) return;
+
+    // Instant feedback - don't wait for upload
     if (type === 'id') {
       setIdDocument(file);
+      console.log('✅ ID Document selected:', file.name);
     } else {
       setSelfie(file);
+      console.log('✅ Selfie selected:', file.name);
     }
   };
 

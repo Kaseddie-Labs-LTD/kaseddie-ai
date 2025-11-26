@@ -12,6 +12,28 @@ function NavigationBar() {
     { id: 'news', label: 'News', icon: '📰' },
   ];
 
+  const handleNavigation = (itemId) => {
+    setActiveTab(itemId);
+    
+    // Simulate navigation with alerts for demo
+    switch(itemId) {
+      case 'dashboard':
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        break;
+      case 'markets':
+        alert('📊 Navigating to Markets... (Coming Soon)');
+        break;
+      case 'trade':
+        alert('💱 Opening Trade Menu... (Spot/Futures/Convert)');
+        break;
+      case 'news':
+        alert('📰 Navigating to News Feed... (Coming Soon)');
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <nav className="bg-slate-900/95 backdrop-blur-lg border-b border-neon-purple/30 sticky top-0 z-50">
@@ -33,7 +55,7 @@ function NavigationBar() {
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => handleNavigation(item.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                     activeTab === item.id
                       ? 'bg-neon-purple/20 text-neon-purple border border-neon-purple/50'
@@ -62,7 +84,7 @@ function NavigationBar() {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleNavigation(item.id)}
                 className={`flex items-center gap-1 px-3 py-2 rounded-lg whitespace-nowrap text-sm ${
                   activeTab === item.id
                     ? 'bg-neon-purple/20 text-neon-purple border border-neon-purple/50'

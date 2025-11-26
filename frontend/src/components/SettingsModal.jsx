@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getApiUrl } from '../config';
 
 function SettingsModal({ onClose }) {
@@ -12,6 +12,30 @@ function SettingsModal({ onClose }) {
     apiKey: '',
     apiSecret: '',
   });
+  const [updateStatus, setUpdateStatus] = useState('idle'); // idle, checking, updated
+  const [feedbackStatus, setFeedbackStatus] = useState('idle'); // idle, sending, sent
+  const [feedbackType, setFeedbackType] = useState('bug');
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('kaseddie_settings');
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        setSettings(parsed);
+        console.log('✅ Settings loaded from localStorage');
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+      }
+    }
+  }, []);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('kaseddie_settings', JSON.stringify(settings));
+    console.log('💾 Settings saved to localStorage');
+  }, [settings]);
 
   const sections = [
     { id: 'preferences', label: 'Trade Preferences', icon: '⚙️' },
@@ -25,13 +49,52 @@ function SettingsModal({ onClose }) {
   const handleSave = () => {
     localStorage.setItem('kaseddie_settings', JSON.stringify(settings));
     alert('✅ Settings saved successfully!');
+    onClose();
   };
 
   const handleClearCache = () => {
-    if (confirm('Are you sure you want to clear all cached data?')) {
+    if (confirm('⚠️ Are you sure you want to clear all cached data? This will log you out and remove all settings.')) {
       localStorage.clear();
-      alert('✅ Cache cleared! Please refresh the page.');
+      alert('✅ Cache cleared! Reloading page...');
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
+  };
+
+  const handleCheckUpdates = async () => {
+    setUpdateStatus('checking');
+    
+    // Simulate checking for updates
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setUpdateStatus('updated');
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      setUpdateStatus('idle');
+    }, 3000);
+  };
+
+  const handleSendFeedback = async () => {
+    if (!feedbackMessage.trim()) {
+      alert('⚠️ Please enter a message before sending feedback.');
+      return;
+    }
+
+    setFeedbackStatus('sending');
+    
+    // Simulate sending feedback
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setFeedbackStatus('sent');
+    
+    // Reset form after 2 seconds
+    setTimeout(() => {
+      setFeedbackMessage('');
+      setFeedbackType('bug');
+      setFeedbackStatus('idle');
+    }, 2000);
   };
 
   return (
@@ -242,12 +305,36 @@ function SettingsModal({ onClose }) {
                 
                 <div className="bg-slate-800 rounded-lg p-6">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="text-4xl">✅</div>
+                    <div className="text-4xl">
+                      {updateStatus === 'checking' ? '⏳' : updateStatus === 'updated' ? '✅' : '🔄'}
+                    </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-neon-green">You're up to date!</h4>
-                      <p className="text-slate-400 text-sm">Kaseddie AI v1.0.0</p>
+                      <h4 className={`text-lg font-semibold ${updateStatus === 'updated' ? 'text-neon-green' : 'text-white'}`}>
+                        {updateStatus === 'checking' ? 'Checking for updates...' : 
+                         updateStatus === 'updated' ? "You're up to date!" : 
+                         'Kaseddie AI v1.0.0'}
+                      </h4>
+                      <p className="text-slate-400 text-sm">
+                        {updateStatus === 'checking' ? 'Please wait...' : 'Latest version installed'}
+                      </p>
                     </div>
                   </div>
+
+                  <button
+                    onClick={handleCheckUpdates}
+                    disabled={updateStatus === 'checking'}
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-all ${
+                      updateStatus === 'checking'
+                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                        : updateStatus === 'updated'
+                        ? 'bg-neon-green/20 text-neon-green border border-neon-green/50'
+                        : 'bg-neon-purple hover:bg-neon-purple/80 text-white'
+                    }`}
+                  >
+                    {updateStatus === 'checking' ? '⏳ Checking...' : 
+                     updateStatus === 'updated' ? '✅ Up to Date' : 
+                     '🔄 Check for Updates'}
+                  </button>
                   
                   <div className="border-t border-slate-700 pt-4 mt-4">
                     <h5 className="font-semibold text-white mb-2">Latest Updates:</h5>
@@ -267,14 +354,25 @@ function SettingsModal({ onClose }) {
               <div className="space-y-6">
                 <h3 className="text-xl font-bold text-white mb-4">💬 Send Feedback</h3>
                 
+                {feedbackStatus === 'sent' && (
+                  <div className="bg-neon-green/20 border border-neon-green/50 rounded-lg p-4 mb-4">
+                    <p className="text-neon-green font-semibold">✅ Feedback sent successfully! Thank you!</p>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   <div>
                     <label className="block mb-2 font-semibold text-white">Feedback Type</label>
-                    <select className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple">
-                      <option>🐛 Bug Report</option>
-                      <option>💡 Feature Request</option>
-                      <option>⭐ General Feedback</option>
-                      <option>❓ Question</option>
+                    <select 
+                      value={feedbackType}
+                      onChange={(e) => setFeedbackType(e.target.value)}
+                      disabled={feedbackStatus === 'sending'}
+                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple disabled:opacity-50"
+                    >
+                      <option value="bug">🐛 Bug Report</option>
+                      <option value="feature">💡 Feature Request</option>
+                      <option value="general">⭐ General Feedback</option>
+                      <option value="question">❓ Question</option>
                     </select>
                   </div>
 
@@ -282,13 +380,24 @@ function SettingsModal({ onClose }) {
                     <label className="block mb-2 font-semibold text-white">Your Message</label>
                     <textarea
                       rows="6"
+                      value={feedbackMessage}
+                      onChange={(e) => setFeedbackMessage(e.target.value)}
+                      disabled={feedbackStatus === 'sending'}
                       placeholder="Tell us what you think..."
-                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple resize-none"
+                      className="w-full bg-slate-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple resize-none disabled:opacity-50"
                     ></textarea>
                   </div>
 
-                  <button className="w-full bg-neon-purple hover:bg-neon-purple/80 text-white font-bold py-3 px-6 rounded-lg transition-all">
-                    Send Feedback
+                  <button 
+                    onClick={handleSendFeedback}
+                    disabled={feedbackStatus === 'sending'}
+                    className={`w-full font-bold py-3 px-6 rounded-lg transition-all ${
+                      feedbackStatus === 'sending'
+                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                        : 'bg-neon-purple hover:bg-neon-purple/80 text-white'
+                    }`}
+                  >
+                    {feedbackStatus === 'sending' ? '⏳ Sending...' : '📤 Send Feedback'}
                   </button>
                 </div>
               </div>
