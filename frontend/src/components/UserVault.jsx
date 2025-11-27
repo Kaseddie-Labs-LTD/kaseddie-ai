@@ -318,7 +318,7 @@ function UserVault() {
 
       {/* Manual Trading - Show if verified */}
       {user.kycStatus === 'verified' && (
-        <div className="mt-6">
+        <div id="manual-section" className="mt-6">
           <ManualTrade user={user} />
         </div>
       )}

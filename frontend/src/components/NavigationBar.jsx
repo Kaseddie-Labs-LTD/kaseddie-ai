@@ -15,21 +15,87 @@ function NavigationBar() {
   const handleNavigation = (itemId) => {
     setActiveTab(itemId);
     
-    // Simulate navigation with alerts for demo
     switch(itemId) {
       case 'dashboard':
+        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
         break;
+        
       case 'markets':
-        alert('📊 Navigating to Markets... (Coming Soon)');
+        // Scroll to top to show Crypto Pulse ticker
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          alert('📊 Markets Overview\n\nReal-time crypto prices are displayed in the ticker above.\n\nFeatures:\n• Live price updates\n• 24h price changes\n• Scrolling ticker animation\n\nFull market analysis coming soon!');
+        }, 300);
         break;
+        
       case 'trade':
-        alert('💱 Opening Trade Menu... (Spot/Futures/Convert)');
+        // Show trade options menu
+        showTradeMenu();
         break;
+        
       case 'news':
-        alert('📰 Navigating to News Feed... (Coming Soon)');
+        // Scroll to Knowledge Terminal (news/market insights)
+        const knowledgeSection = document.getElementById('knowledge-section');
+        if (knowledgeSection) {
+          // Account for sticky header height
+          const headerOffset = 120;
+          const elementPosition = knowledgeSection.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          
+          setTimeout(() => {
+            alert('📰 News & Market Insights\n\nUse the Knowledge Terminal below to:\n• Ask about any cryptocurrency\n• Get real-time market analysis\n• Access AI-powered insights\n\nTry asking: "How is Bitcoin doing?" or "What strategies do you use?"');
+          }, 500);
+        }
         break;
+        
       default:
+        break;
+    }
+  };
+
+  const showTradeMenu = () => {
+    const choice = prompt(
+      '💱 Select Trading Mode:\n\n' +
+      '1. Spot Trade (Manual)\n' +
+      '2. Futures (Strategies)\n' +
+      '3. Convert (Coming Soon)\n\n' +
+      'Enter 1, 2, or 3:'
+    );
+    
+    switch(choice) {
+      case '1':
+        // Scroll to Manual Trade section
+        const manualSection = document.getElementById('manual-section');
+        if (manualSection) {
+          manualSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          alert('⚠️ Please login and complete KYC verification to access Manual Trading');
+        }
+        break;
+        
+      case '2':
+        // Scroll to Strategy Grid (Futures)
+        const strategySection = document.getElementById('strategy-section');
+        if (strategySection) {
+          strategySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          alert('⚠️ Please login and complete KYC verification to access Futures Trading');
+        }
+        break;
+        
+      case '3':
+        // Convert feature
+        alert('⚠️ Currency Conversion requires Level 2 Verification.\n\nThis feature is coming soon!');
+        break;
+        
+      default:
+        // User cancelled or invalid input
         break;
     }
   };

@@ -3,6 +3,23 @@ import { getAuthorizationUrl, authenticateWithCode } from '../services/authServi
 
 const router = express.Router();
 
+// ============================================================================
+// Environment-Aware Client URL Configuration
+// ============================================================================
+// Determines the correct frontend URL based on environment
+// - Production: Netlify deployment
+// - Development: Local Vite server
+// - Override: Custom FRONTEND_URL env variable
+// ============================================================================
+
+const CLIENT_URL = process.env.FRONTEND_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://kaseddie-ai-1.netlify.app' 
+    : 'http://localhost:5173');
+
+console.log(`[Auth] Environment: ${process.env.NODE_ENV || 'development'}`);
+console.log(`[Auth] Client URL: ${CLIENT_URL}`);
+
 // GET /api/auth/login - Generate WorkOS authorization URL
 router.get('/login', (req, res) => {
   try {
@@ -37,9 +54,12 @@ router.get('/callback', async (req, res) => {
     // Authenticate user with code
     const userData = await authenticateWithCode(code);
     
-    // Redirect to frontend with user data
+    // Redirect to frontend with user data (environment-aware)
     const userParam = encodeURIComponent(JSON.stringify(userData));
-    res.redirect(`http://localhost:5173?user=${userParam}`);
+    const redirectUrl = `${CLIENT_URL}?user=${userParam}`;
+    
+    console.log(`[Auth] Redirecting to: ${redirectUrl}`);
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error in auth callback:', error);
     res.status(500).json({

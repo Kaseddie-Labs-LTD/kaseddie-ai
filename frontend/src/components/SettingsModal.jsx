@@ -98,8 +98,8 @@ function SettingsModal({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-900 rounded-xl border border-neon-purple/30 max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-slate-900 rounded-xl border border-neon-purple/30 max-w-4xl w-full my-8 shadow-2xl flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="bg-slate-800 border-b border-slate-700 p-6 flex items-center justify-between">
           <div>
@@ -114,9 +114,9 @@ function SettingsModal({ onClose }) {
           </button>
         </div>
 
-        <div className="flex h-[600px]">
+        <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-64 bg-slate-800/50 border-r border-slate-700 p-4 overflow-y-auto">
+          <div className="w-64 bg-slate-800/50 border-r border-slate-700 p-4 overflow-y-auto flex-shrink-0">
             {sections.map((section) => (
               <button
                 key={section.id}
