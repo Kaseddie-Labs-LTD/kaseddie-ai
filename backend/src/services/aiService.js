@@ -409,21 +409,14 @@ const INSTANT_ANSWERS = {
   
   '2% rule': "👻 The 2% Rule is a golden principle of trading: never risk more than 2% of your total portfolio on a single trade. This protects you from catastrophic losses. For example, if you have $10,000, you should only risk $200 per trade. This way, even if you lose 10 trades in a row, you still have 80% of your capital left!",
   
-  // Market general - EXPANDED
+  // Market general - EXPANDED (but NO specific crypto names - let AI + News handle those!)
   'market': "👻 The crypto market is highly volatile and operates 24/7 globally. Current trends show institutional adoption increasing, with major companies and countries exploring blockchain technology. Key factors affecting prices include: regulatory news, technological developments, market sentiment, and macroeconomic conditions. Always do your research and never invest more than you can afford to lose!",
   
   'how is the market': "👻 The crypto market is highly volatile and operates 24/7 globally. Current trends show institutional adoption increasing. Major factors affecting prices include regulatory news, technological developments, and market sentiment. I analyze real-time data from Binance and use 8 algorithmic strategies to identify trading opportunities. Always do your research and never invest more than you can afford to lose!",
   
-  'crypto': "👻 Cryptocurrency is a digital asset secured by cryptography and blockchain technology. Bitcoin pioneered the space in 2009, and now thousands of cryptocurrencies exist. The market is known for high volatility, 24/7 trading, and potential for significant gains (and losses). Major players include Bitcoin (BTC), Ethereum (ETH), and Solana (SOL).",
-  
-  'cryptocurrency': "👻 Cryptocurrency is a digital asset secured by cryptography and blockchain technology. Bitcoin pioneered the space in 2009. The market operates 24/7 with high volatility. Major cryptocurrencies include Bitcoin (BTC), Ethereum (ETH), and Solana (SOL). I analyze these markets using Google Vertex AI and execute trades using 8 algorithmic strategies.",
-  
-  // Specific crypto quick facts
-  'bitcoin': "👻 Bitcoin (BTC) is the original cryptocurrency, created in 2009 by Satoshi Nakamoto. It's often called 'digital gold' and serves as a store of value. Bitcoin has a fixed supply of 21 million coins, making it deflationary. It's the most widely adopted crypto and often leads market trends. Current institutional adoption is growing rapidly.",
-  
-  'ethereum': "👻 Ethereum (ETH) is the leading smart contract platform, enabling decentralized applications (dApps) and DeFi protocols. Created by Vitalik Buterin in 2015, it's the foundation for NFTs, DeFi, and Web3. Ethereum transitioned to Proof-of-Stake in 2022, making it more energy-efficient. It's the second-largest cryptocurrency by market cap.",
-  
-  'solana': "👻 Solana (SOL) is a high-performance blockchain known for fast transactions and low fees. It can process up to 65,000 transactions per second, making it ideal for DeFi and NFT applications. Solana has gained significant traction in the crypto space due to its speed and scalability, though it has faced some network stability challenges.",
+  // NOTE: Removed 'bitcoin', 'ethereum', 'solana', 'crypto', 'cryptocurrency' 
+  // These should use Real AI + News for real-time market analysis!
+  // When you ask "How is Bitcoin?", it will fetch real-time news and analyze it
   
   // Additional helpful answers
   'how does it work': "👻 I work by combining multiple technologies: I use Binance API to fetch real-time crypto prices, Google Vertex AI to analyze market trends and news, and 8 algorithmic strategies to identify trading opportunities. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) for risk management. I require KYC verification through WorkOS before unlocking trading features.",
