@@ -374,27 +374,49 @@ function detectCryptoInQuestion(question) {
  * Falls back to AI for complex/unknown questions
  */
 const INSTANT_ANSWERS = {
-  // Self-awareness questions
+  // Self-awareness questions - EXPANDED
   'built': "👻 I am Kaseddie AI, built for the Kiroween Hackathon. My architecture uses Google Vertex AI (Gemini 1.5 Flash) as my brain, Google Cloud Text-to-Speech (Journey Voice) for speaking, Binance API for real-time crypto prices, WorkOS for authentication and KYC verification, and Stripe for wallet operations. I'm hosted on Render (backend) and Netlify (frontend).",
+  
+  'this app': "👻 I am Kaseddie AI, an autonomous crypto trading agent built for the Kiroween Hackathon. My Frankenstein Stack includes: Google Vertex AI (brain), Google Cloud Text-to-Speech (voice), Binance API (eyes), WorkOS (nervous system), Stripe (wallet), hosted on Render and Netlify. I execute trades using 8 algorithmic strategies with automatic Stop Loss (-2%) and Take Profit (+4%).",
+  
+  'about you': "👻 I'm Kaseddie AI, an autonomous crypto trading agent built for the Kiroween Hackathon. I combine AI-powered market analysis with real-time data to execute smart trades using 8 algorithmic strategies. My architecture stitches together Google Vertex AI, Binance API, WorkOS, and Stripe to create a complete trading platform.",
+  
+  'kaseddie': "👻 Kaseddie AI is an autonomous crypto trading agent built for the Kiroween Hackathon. I use Google Vertex AI for intelligence, Binance API for real-time prices, WorkOS for authentication, and Stripe for wallet operations. I execute trades using 8 algorithmic strategies with automatic risk management.",
   
   'architecture': "👻 My Frankenstein Stack consists of: Brain (Google Vertex AI Gemini 1.5 Flash), Voice (Google Cloud Text-to-Speech), Eyes (Binance API), Nervous System (WorkOS), Body (Render + Netlify), and Wallet (Stripe). Each component works together to create an autonomous trading agent.",
   
   'who are you': "👻 I'm Kaseddie AI, an autonomous crypto trading agent built for the Kiroween Hackathon. I combine AI-powered market analysis with real-time data to execute smart trades using 8 algorithmic strategies.",
   
-  // Trading strategies
+  'what are you': "👻 I'm Kaseddie AI, an autonomous crypto trading agent. I analyze markets using Google Vertex AI, fetch real-time prices from Binance, and execute trades using 8 algorithmic strategies. I automatically calculate Stop Loss (-2%) and Take Profit (+4%) for every trade to manage risk.",
+  
+  // Trading strategies - EXPANDED
   'strategies': "👻 I execute trades using 8 algorithmic strategies: Momentum (riding price trends), Mean Reversion (buying dips), Breakout (catching explosive moves), RSI Divergence (spotting reversals), MACD Crossover (trend confirmation), Volume Spike (detecting big moves), Support/Resistance (key price levels), and Trend Following (riding the wave). I automatically calculate Stop Loss (-2%) and Take Profit (+4%) for every trade.",
   
   'strategy': "👻 I use 8 algorithmic trading strategies to maximize profits while managing risk. Each trade automatically includes a Stop Loss at -2% and Take Profit at +4%. I analyze market momentum, volume, technical indicators, and support/resistance levels to make informed decisions.",
   
-  // Risk management
+  'how do you trade': "👻 I use 8 algorithmic strategies: Momentum, Mean Reversion, Breakout, RSI Divergence, MACD Crossover, Volume Spike, Support/Resistance, and Trend Following. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) for risk management. I analyze real-time market data from Binance and use Google Vertex AI for decision-making.",
+  
+  'trading strategies': "👻 I execute trades using 8 algorithmic strategies: Momentum (riding trends), Mean Reversion (buying dips), Breakout (catching moves), RSI Divergence (spotting reversals), MACD Crossover (trend confirmation), Volume Spike (detecting big moves), Support/Resistance (key levels), and Trend Following. Each trade has automatic Stop Loss (-2%) and Take Profit (+4%).",
+  
+  // Risk management - EXPANDED
+  'stop loss': "👻 Stop Loss is a critical risk management tool that automatically closes your trade if the price drops to a certain level, limiting your losses. I automatically set Stop Loss at -2% for every trade. For example, if you buy Bitcoin at $50,000, your Stop Loss would be at $49,000. This protects you from catastrophic losses and is part of the 2% Rule: never risk more than 2% of your portfolio per trade.",
+  
+  'take profit': "👻 Take Profit is an order that automatically closes your trade when the price reaches your target profit level. I automatically set Take Profit at +4% for every trade. For example, if you buy Bitcoin at $50,000, your Take Profit would be at $52,000. This locks in your gains and ensures you don't get greedy. Combined with Stop Loss (-2%), this gives you a 2:1 reward-to-risk ratio.",
+  
+  'risk management': "👻 Risk management is crucial! I follow the 2% Rule: never risk more than 2% of your portfolio per trade. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) levels. I also use position sizing, diversification across multiple assets, and algorithmic strategies to minimize risk while maximizing returns.",
+  
   'risk': "👻 Risk management is crucial! I follow the 2% Rule: never risk more than 2% of your portfolio per trade. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) levels. I also use position sizing, diversification across multiple assets, and algorithmic strategies to minimize risk while maximizing returns.",
   
   '2% rule': "👻 The 2% Rule is a golden principle of trading: never risk more than 2% of your total portfolio on a single trade. This protects you from catastrophic losses. For example, if you have $10,000, you should only risk $200 per trade. This way, even if you lose 10 trades in a row, you still have 80% of your capital left!",
   
-  // Market general
+  // Market general - EXPANDED
   'market': "👻 The crypto market is highly volatile and operates 24/7 globally. Current trends show institutional adoption increasing, with major companies and countries exploring blockchain technology. Key factors affecting prices include: regulatory news, technological developments, market sentiment, and macroeconomic conditions. Always do your research and never invest more than you can afford to lose!",
   
+  'how is the market': "👻 The crypto market is highly volatile and operates 24/7 globally. Current trends show institutional adoption increasing. Major factors affecting prices include regulatory news, technological developments, and market sentiment. I analyze real-time data from Binance and use 8 algorithmic strategies to identify trading opportunities. Always do your research and never invest more than you can afford to lose!",
+  
   'crypto': "👻 Cryptocurrency is a digital asset secured by cryptography and blockchain technology. Bitcoin pioneered the space in 2009, and now thousands of cryptocurrencies exist. The market is known for high volatility, 24/7 trading, and potential for significant gains (and losses). Major players include Bitcoin (BTC), Ethereum (ETH), and Solana (SOL).",
+  
+  'cryptocurrency': "👻 Cryptocurrency is a digital asset secured by cryptography and blockchain technology. Bitcoin pioneered the space in 2009. The market operates 24/7 with high volatility. Major cryptocurrencies include Bitcoin (BTC), Ethereum (ETH), and Solana (SOL). I analyze these markets using Google Vertex AI and execute trades using 8 algorithmic strategies.",
   
   // Specific crypto quick facts
   'bitcoin': "👻 Bitcoin (BTC) is the original cryptocurrency, created in 2009 by Satoshi Nakamoto. It's often called 'digital gold' and serves as a store of value. Bitcoin has a fixed supply of 21 million coins, making it deflationary. It's the most widely adopted crypto and often leads market trends. Current institutional adoption is growing rapidly.",
@@ -402,6 +424,11 @@ const INSTANT_ANSWERS = {
   'ethereum': "👻 Ethereum (ETH) is the leading smart contract platform, enabling decentralized applications (dApps) and DeFi protocols. Created by Vitalik Buterin in 2015, it's the foundation for NFTs, DeFi, and Web3. Ethereum transitioned to Proof-of-Stake in 2022, making it more energy-efficient. It's the second-largest cryptocurrency by market cap.",
   
   'solana': "👻 Solana (SOL) is a high-performance blockchain known for fast transactions and low fees. It can process up to 65,000 transactions per second, making it ideal for DeFi and NFT applications. Solana has gained significant traction in the crypto space due to its speed and scalability, though it has faced some network stability challenges.",
+  
+  // Additional helpful answers
+  'how does it work': "👻 I work by combining multiple technologies: I use Binance API to fetch real-time crypto prices, Google Vertex AI to analyze market trends and news, and 8 algorithmic strategies to identify trading opportunities. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) for risk management. I require KYC verification through WorkOS before unlocking trading features.",
+  
+  'features': "👻 My key features include: 8 algorithmic trading strategies (Momentum, Mean Reversion, Breakout, RSI Divergence, MACD Crossover, Volume Spike, Support/Resistance, Trend Following), automatic Stop Loss (-2%) and Take Profit (+4%), real-time market data from Binance, AI-powered analysis using Google Vertex AI, voice responses using Google Cloud Text-to-Speech, and secure authentication via WorkOS.",
 };
 
 /**
