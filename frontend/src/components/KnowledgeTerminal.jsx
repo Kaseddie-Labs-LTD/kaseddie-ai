@@ -22,11 +22,18 @@ function KnowledgeTerminal() {
     setConversationHistory(prev => [...prev, { type: 'question', text: currentQuestion }]);
 
     try {
+      // Create abort controller for 25-second timeout (increased from 4s for Vertex AI latency)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+
       const response = await fetch(getApiUrl('/api/ai/ask'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: currentQuestion })
+        body: JSON.stringify({ question: currentQuestion }),
+        signal: controller.signal
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -73,7 +80,12 @@ function KnowledgeTerminal() {
       }
     } catch (err) {
       console.error('AI ask error:', err);
-      const errorMsg = 'Failed to connect to AI service';
+      let errorMsg = 'Failed to connect to AI service';
+      
+      if (err.name === 'AbortError') {
+        errorMsg = '⏱️ Request timed out after 25 seconds. The AI service may be experiencing high load. Please try again.';
+      }
+      
       setAnswer(errorMsg);
       setConversationHistory(prev => [...prev, { type: 'error', text: errorMsg }]);
     } finally {

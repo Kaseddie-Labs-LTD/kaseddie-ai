@@ -403,6 +403,8 @@ const INSTANT_ANSWERS = {
   
   'take profit': "👻 Take Profit is an order that automatically closes your trade when the price reaches your target profit level. I automatically set Take Profit at +4% for every trade. For example, if you buy Bitcoin at $50,000, your Take Profit would be at $52,000. This locks in your gains and ensures you don't get greedy. Combined with Stop Loss (-2%), this gives you a 2:1 reward-to-risk ratio.",
   
+  'stop loss take profit': "👻 Stop Loss and Take Profit are essential risk management tools! Stop Loss (-2%) automatically closes your trade if price drops, protecting you from big losses. Take Profit (+4%) automatically closes when you hit your target, locking in gains. Together they give you a 2:1 reward-to-risk ratio. For example: Buy Bitcoin at $50,000 → Stop Loss at $49,000 (limit loss) → Take Profit at $52,000 (secure profit). This is part of the 2% Rule: never risk more than 2% of your portfolio per trade!",
+  
   'risk management': "👻 Risk management is crucial! I follow the 2% Rule: never risk more than 2% of your portfolio per trade. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) levels. I also use position sizing, diversification across multiple assets, and algorithmic strategies to minimize risk while maximizing returns.",
   
   'risk': "👻 Risk management is crucial! I follow the 2% Rule: never risk more than 2% of your portfolio per trade. Every trade automatically includes Stop Loss (-2%) and Take Profit (+4%) levels. I also use position sizing, diversification across multiple assets, and algorithmic strategies to minimize risk while maximizing returns.",
@@ -425,18 +427,34 @@ const INSTANT_ANSWERS = {
 };
 
 /**
- * Check if question matches instant answer keywords
+ * Check if question matches instant answer keywords with fuzzy matching
  * @param {string} question - User's question
  * @returns {string|null} Instant answer or null
  */
 function getInstantAnswer(question) {
   const lowerQuestion = question.toLowerCase();
   
-  // Check each keyword for matches
+  // Remove common filler words for better matching
+  const cleanQuestion = lowerQuestion
+    .replace(/\b(tell me about|what is|what are|how is|explain|describe)\b/g, '')
+    .trim();
+  
+  // Check each keyword for matches (fuzzy matching)
   for (const [keyword, answer] of Object.entries(INSTANT_ANSWERS)) {
-    if (lowerQuestion.includes(keyword)) {
+    // Check if keyword appears in original or cleaned question
+    if (lowerQuestion.includes(keyword) || cleanQuestion.includes(keyword)) {
       console.log(`[Hybrid Brain] ⚡ Instant answer triggered for keyword: "${keyword}"`);
       return answer;
+    }
+    
+    // Special handling for multi-word keywords (e.g., "stop loss take profit")
+    const keywordParts = keyword.split(' ');
+    if (keywordParts.length > 1) {
+      const allPartsPresent = keywordParts.every(part => lowerQuestion.includes(part));
+      if (allPartsPresent) {
+        console.log(`[Hybrid Brain] ⚡ Instant answer triggered for multi-word keyword: "${keyword}"`);
+        return answer;
+      }
     }
   }
   
